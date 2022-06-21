@@ -1,0 +1,57 @@
+<h1 class="heading">RoR Cafe</h1>
+
+<section class="orders-section">
+  <h3>Orders</h3>
+
+  <% Order.all.each do |order| %>
+    <section class="order">
+      <% customer = User.find_by(id: order.user_id) %>
+      <h4 class="customer-name">
+        <%= customer.name %>
+        <span class="gray-color">₹<%= order.amount %></span>
+        <% if order.completed %>
+          <p class="green-color">Completed!</p>
+        <% else %>
+          <%= form_with(url: "/orders/#{order.id}", method: "put") do %>
+            <%= button_tag 'Complete Order', class: "complete-btn" %>
+          <% end %>
+        <% end %>
+      </h4>
+
+      <% order.orderitem.all.each do |order_item| %>
+        <% current_item = Item.find_by(id: order_item.item_id) %>
+        <p>
+          <%= current_item.item_name %>
+          <span class="gray-color"> <%= order_item.quantity %> </span>
+        </p>
+      <% end %>
+    </section>
+  <% end %>
+</section>
+
+<hr>
+
+<section class="menu-section">
+  <h3>Add to Menu</h3>
+
+  <% Submenu.all.each do |submenu| %>
+    <p> <%= submenu.submenu_name %>: ID- <%= submenu.id %> </p>
+  <% end %>
+
+  <%= form_with(url: "/addtomenu", method: "post", class: "input-section") do %>
+    <%= text_field_tag :item_name, "", placeholder: "Item name", class: "item-text-input" %>
+    <%= number_field_tag 'price', nil, min: "1", max: "1000", class: "item-text-input", placeholder: "Price" %>
+    <%= number_field_tag 'submenu_id', nil, min: "1", max: "3", class: "item-text-input", placeholder: "ID" %>
+    <%= button_tag 'Add', class:"add-btn" %>
+  <% end %>
+</section>
+
+<hr>
+
+<section class="users-section">
+  <h3>List of Customers</h3>
+
+  <% User.customers_only.all.each do |user| %>
+    <p> <%= user.name %> </p>
+  <% end %>
+</section>

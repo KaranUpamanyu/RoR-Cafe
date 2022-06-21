@@ -1,0 +1,15 @@
+<h3 class="submenu-heading"> <%= section_title %> </h3>
+<ul>
+  <% items.all.each do |item| %>
+    <li class="submenu-item">
+      <label class="submenu-label">
+        <%= item.item_name %>
+        <span class="item-price">₹<%= item.price %></span>
+      </label>
+      <%= form_with(url: "/carts", method: "post", class: "input-section") do %>
+        <%= number_field_tag 'quantity', nil, min: "1", max: "10", class: "quantity-field" %>
+        <%= button_tag 'Add', class: "add-btn add-to-cart", value: item.id %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

@@ -1,0 +1,67 @@
+<h1 class="heading">RoR Cafe</h1>
+
+<section class="menu-items">
+  <%= render partial: "submenu-section", locals: {
+    section_title: "Breakfast",
+    items: Item.breakfast
+  } %>
+
+  <%= render partial: "submenu-section", locals: {
+    section_title: "Full Meals",
+    items: Item.meals
+  } %>
+
+  <%= render partial: "submenu-section", locals: {
+    section_title: "Beverages",
+    items: Item.beverages
+  } %>
+</section>
+
+<hr>
+
+<section class="cart-section">
+  <h3 class="heading">Cart</h3>
+
+  <ul>
+    <% @current_user.cart.all.each do |cart_item| %>
+      <% item = Item.find_by(id: cart_item.item_id) %>
+      <li class="flex-li">
+        <%= item.item_name %>
+        <%= cart_item.quantity %>
+        <%= form_with(url: "/carts/#{cart_item.id}", method: "delete") do %>
+          <%= image_submit_tag("trash.svg", class: 'trash-btn') %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+
+  <%= form_with(url: "/order", method: "post", class: "input-section") do %>
+    <%= button_tag 'Place Order', class: "add-btn" %>
+  <% end %>
+</section>
+
+<hr>
+
+<section class="my-orders-section">
+  <h3 class="heading">My Orders</h3>
+  <% @current_user.order.all.each do |order| %>
+    <section class="order">
+      <h4 class="customer-name">
+        <% if order.completed %>
+          <p class="green-color">Completed!</p>
+        <% else %>
+          <p class="green-color">Waiting</p>
+        <% end %>
+        <span class="gray-color">₹<%= order.amount %></span>
+      </h4>
+
+      <% order.orderitem.all.each do |order_item| %>
+        <% current_item = Item.find_by(id: order_item.item_id) %>
+        <p>
+          <%= current_item.item_name %>
+          <span class="gray-color"> <%= order_item.quantity %> </span>
+        </p>
+      <% end %>
+    </section>
+  <% end %>
+</section>
